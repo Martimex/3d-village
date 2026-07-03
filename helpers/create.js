@@ -26,8 +26,6 @@ export default {
     sandbox: (obj) => createSandbox(obj)
 }
 
-const myGUI = new GUI();
-
 function createGround(sceneOrGroup) {
     const ground_Textures = _LOAD.getGroundTextures();
     const floorGeo = new THREE.Mesh(
@@ -47,8 +45,6 @@ function createGround(sceneOrGroup) {
     );
 
     floorGeo.renderOrder = 1;
-
-    myGUI.add(floorGeo.material, "displacementBias").min(-1).max(1).step(0.01);
 
     floorGeo.rotation.x = Math.PI * -0.50;
 
@@ -106,7 +102,7 @@ function createHouse1(sceneOrGroup) {
         })
     )
     doorGeo.position.y = (doorHeight / 2) - 0.1;
-    doorGeo.position.z = wallsWidth / 2; /* wallsGeo.position.z +  wallsGeo.z / 2; */
+    doorGeo.position.z = wallsWidth / 2; 
 
     // Position the group across the scene
     sceneOrGroup.position.set(-5, 0, -5);
@@ -237,7 +233,7 @@ function createHouse2(sceneOrGroup) {
     const [bulbRadius, bulbWidthSegments, bulbHeightSegments] = [0.25, 16, 16];
     const lightBulb = new THREE.Mesh(
         new THREE.SphereGeometry(bulbRadius, bulbWidthSegments, bulbHeightSegments),
-        new THREE.MeshStandardMaterial({ 
+        new THREE.MeshPhysicalMaterial({ 
             color: new THREE.Color("hsl(50, 75%, 75%)"),
             emissive: new THREE.Color("hsl(50, 75%, 75%)"),
             metalness: 0.2,
@@ -652,7 +648,6 @@ function createGarden(sceneOrGroup) {
                 normalMap: garden_Textures.plants.normalMap
             })
         );
-        /* gardenPlant.position.y = plantRadius / 2; */
         gardenPlant.rotation.x = Math.PI * 1.5;
         gardenPlant.position.x = plantsConfigObj[plantNo].xPos;
         gardenPlant.position.z = plantsConfigObj[plantNo].zPos;
@@ -1145,9 +1140,6 @@ function createSandbox(sceneOrGroup) {
         /* _ShadowUtils.supportShadowReceiving(sandboxFrame); */
         sceneOrGroup.add(sandboxFrame);
     }
-
-    //const sandMaterial = new THREE.MeshStandardMaterial({ color: "hsl(40, 50%, 60%)" });
-    /* const sandTestMaterial = new THREE.MeshStandardMaterial({ color: "hsl(40, 50%, 65%)" }); */
 
     const [ssWidth, ssHeight, ssDepth] = [4, 0.2, 4];
     const sandSurface = new THREE.Mesh(

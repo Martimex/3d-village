@@ -133,18 +133,6 @@ scene.add(..._LIGHTS.lamp_pointLight);
 scene.add(..._LIGHTS.lightbulb_pointLight);
 scene.add(..._LIGHTS.rectangularLED_rectLight);
 
-// Sky
-/* const sky = new Sky();
-scene.add(sky);
-console.log(sky);
-sky.scale.set(100, 100, 100);
-sky.material.uniforms['turbidity'].value = 10;
-sky.material.uniforms['rayleigh'].value = 3;
-sky.material.uniforms['mieCoefficient'].value = 0.1;
-sky.material.uniforms['mieDirectionalG'].value = 0.95;
-sky.material.uniforms['sunPosition'].value.set(0.3, -0.038, -0.95); */
-
-
 const camera = new THREE.PerspectiveCamera(75, SIZES.WIDTH / SIZES.HEIGHT, 1, 200);
 camera.position.z = 20; // Initially put camera backwards to create some distance between the camera and object
 camera.position.y = 4;
@@ -159,18 +147,10 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.setSize(SIZES.WIDTH, SIZES.HEIGHT);
 renderer.render(scene, camera);
 	
-// Optional - instantiate lil-gui debug panel (first install dependency with: npm i lil-gui)
-/* const gui = new GUI(); */
-    
 // Optional - initialize OrbitControls
 const controls = new OrbitControls(camera, CANVAS_EL);
 controls.enableDamping = true;  // In case you want smoother animation
 
-// Lil-gui controls (optional)
-/* gui.add(floor_Group.scale, "x").min(1).max(2).step(0.1).name("Scale X");
-gui.add(floor_Group.scale, "y").min(1).max(2).step(0.1).name("Scale Y"); */
-/* gui.addColor(GUI_GLOBALS, "color").onChange(() => floorGeoMaterial.color.set(GUI_GLOBALS.color)); */
-	
 // Set up and further use timer for precise animation regardless of device frame rate
 const timer = new THREE.Timer();
 	
