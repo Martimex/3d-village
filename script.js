@@ -2,7 +2,6 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import { OrbitControls, TextGeometry } from "three/examples/jsm/Addons.js";
 import { FontLoader } from "three/examples/jsm/Addons.js";
-import { Sky } from "three/addons/objects/Sky.js";
 import _Create from "./helpers/create.js";
 import _LOAD from "./helpers/load.js";
 import _LIGHTS from "./helpers/lights.js";
@@ -12,8 +11,16 @@ const CANVAS_EL = document.querySelector('canvas#webgl-canvas');
 	
 // USED TO TWEAK THE ISSUE WITH INTERNAL THREEJS COLOR MANAGEMENT
 const GUI_GLOBALS = {
-	color: "#59a1f3"
+	color: "#59a1f3",
+};
+
+const APP_GLOBALS = {
+	isLeftKeyPressed: false,
+	isRightKeyPressed: false,
+	rotationProgress: 0,
+	keyUseTimestamp: 0,
 }
+
 	
 // GLOBAL OBJECT USED TO HANDLE WINDOW RESIZING
 const SIZES = {
@@ -43,6 +50,29 @@ window.addEventListener('dblclick', () => {
 		else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
 	}
 });
+
+
+
+
+// Add scrolling listener to handle manual camera movement (circular around the scene)
+
+document.body.addEventListener('keyup', (event) => {
+	if(event.key === "ArrowLeft") { APP_GLOBALS.isLeftKeyPressed = false; }
+	else if(event.key ===  "ArrowRight") { APP_GLOBALS.isRightKeyPressed = false; }
+})
+
+document.body.addEventListener('keydown', (event) => {
+	if(event.key === "ArrowLeft") { 
+		if(!APP_GLOBALS.isLeftKeyPressed) { APP_GLOBALS.keyUseTimestamp = (event.timeStamp / 1000).toFixed(2); }
+		APP_GLOBALS.isLeftKeyPressed = true;
+	}
+	else if(event.key ===  "ArrowRight") { 
+		if(!APP_GLOBALS.isRightKeyPressed) { APP_GLOBALS.keyUseTimestamp = (event.timeStamp / 1000).toFixed(2); }
+		APP_GLOBALS.isRightKeyPressed = true; 
+	}
+})
+
+
 
 // Loaders
 
@@ -95,7 +125,6 @@ const trees_Group = new THREE.Group();    scene.add(trees_Group);
 const toilet_Group = new THREE.Group();  scene.add(toilet_Group);
 const lane_Group = new THREE.Group();    scene.add(lane_Group);
 const solidwall_Group = new THREE.Group(); scene.add(solidwall_Group);
-/* const floralbow_Group = new THREE.Group(); scene.add(floralbow_Group); */
 const stones_Group = new THREE.Group(); scene.add(stones_Group);
 const bush_Group = new THREE.Group(); scene.add(bush_Group);
 const minifence_Group = new THREE.Group(); scene.add(minifence_Group);
@@ -119,7 +148,7 @@ _Create.lane(lane_Group);
 _Create.solidwall(solidwall_Group);
 _Create.stones(stones_Group);
 _Create.bush(bush_Group);
-_Create.minifence(minifence_Group); // ⚫
+_Create.minifence(minifence_Group);
 _Create.pool(pool_Group);
 _Create.sandbox(sandbox_Group);
 
@@ -147,18 +176,35 @@ renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.setSize(SIZES.WIDTH, SIZES.HEIGHT);
 renderer.render(scene, camera);
 	
-// Optional - initialize OrbitControls
-const controls = new OrbitControls(camera, CANVAS_EL);
-controls.enableDamping = true;  // In case you want smoother animation
-
 // Set up and further use timer for precise animation regardless of device frame rate
 const timer = new THREE.Timer();
-	
+
+// FORMULA
+// camera position z =  IP + (Math.cos([elapsedTime|rotationProgress] [*|/] SP) * DIS);
+/**
+	@param IP: initial point, but it is added to the DIS and the addition of two forms an initial point
+	@param SP: speed, how fast the animation goes
+	@param DIS: distance, what is the travelling range on on side of animation (its like średnica koła)
+*/ 
+
 const loop = () => {
 	timer.update();
     const elapsedTime = timer.getElapsed();
-	controls.update();
-    
+
+	if(APP_GLOBALS.isRightKeyPressed) {
+		APP_GLOBALS.rotationProgress += 0.01;
+		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+	} 
+
+	else if(APP_GLOBALS.isLeftKeyPressed) {
+		APP_GLOBALS.rotationProgress -= 0.01;
+		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+	}
+
+	camera.lookAt(new THREE.Vector3());
+
 	renderer.render(scene, camera);
 	window.requestAnimationFrame(loop);
 }

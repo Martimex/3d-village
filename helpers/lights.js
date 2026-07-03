@@ -3,7 +3,7 @@ import GUI from "lil-gui";
 import { RectAreaLightHelper } from 'three/addons/helpers/RectAreaLightHelper.js';
 import _ShadowUtils from "./shadows.js";
 
-const WORLD_SKY_COLOR = 0x8666cc; /* 0x86cdff or 0x8666cc */
+const WORLD_SKY_COLOR = 0x86cdff; /* 0x86cdff or 0x8666cc */
 
 export default {
     lamp_pointLight: createLampLight(),
