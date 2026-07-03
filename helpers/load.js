@@ -680,7 +680,7 @@ export default {
         }
 
         function getSideWalk1() {
-            const alphaMap = textureLoader.load("../textures/_shared/_alphas/alpha.jpg");
+            const alphaMap = textureLoader.load("../textures/_shared/_alphas/alpha.png");
             const armMap = textureLoader.load("../textures/_shared/rocky_terrain_02/rocky_terrain_02_arm_1k.jpg");
             const colorMap = textureLoader.load("../textures/_shared/rocky_terrain_02/rocky_terrain_02_diff_1k.jpg");
             colorMap.colorSpace = THREE.SRGBColorSpace;
@@ -704,7 +704,7 @@ export default {
 
         function getSidewalk2() {
 
-            const alphaMap = textureLoader.load("../textures/_shared/_alphas/alpha.jpg");
+            const alphaMap = textureLoader.load("../textures/_shared/_alphas/alpha.png");
             const armMap = textureLoader.load("../textures/_shared/rocky_terrain_02/rocky_terrain_02_arm_1k.jpg");
             const colorMap = textureLoader.load("../textures/_shared/rocky_terrain_02/rocky_terrain_02_diff_1k.jpg");
             colorMap.colorSpace = THREE.SRGBColorSpace;

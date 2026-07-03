@@ -2,8 +2,10 @@ import * as THREE from "three";
 import GUI from "lil-gui";
 import { OrbitControls, TextGeometry } from "three/examples/jsm/Addons.js";
 import { FontLoader } from "three/examples/jsm/Addons.js";
+import { Sky } from "three/addons/objects/Sky.js";
 import _Create from "./helpers/create.js";
 import _LOAD from "./helpers/load.js";
+import _LIGHTS from "./helpers/lights.js";
 
 // HOOK FOR HTML CANVAS ELEMENT
 const CANVAS_EL = document.querySelector('canvas#webgl-canvas');
@@ -64,10 +66,11 @@ fontLoader.load("./fonts/Bruno_Ace_SC_Regular.json",
 			}
 		);
 		textGeometry.center();
-		const textMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture, color: "#ccc" });
+		/* const textMaterial = new THREE.MeshMatcapMaterial({ matcap: matcapTexture, color: "#ccc" }); */
+		const textMaterial = new THREE.MeshStandardMaterial({ color: "#ccc" });
 		const text = new THREE.Mesh(textGeometry, textMaterial);
 		text.position.x = 9;
-		text.position.z = 11.5;
+		text.position.z = 11/* .5 */;
 		text.position.y = text_Size;
 		scene.add(text);
 	}
@@ -76,6 +79,8 @@ fontLoader.load("./fonts/Bruno_Ace_SC_Regular.json",
 	
 // Initialize the scene and groups
 const scene = new THREE.Scene();
+scene.background = new THREE.Color("hsl(300, 60%, 1%)");
+
 const floor_Group = new THREE.Group();   scene.add(floor_Group);
 const house1_Group = new THREE.Group();  scene.add(house1_Group);
 const house2_Group = new THREE.Group();  scene.add(house2_Group);
@@ -114,16 +119,33 @@ _Create.lane(lane_Group);
 _Create.solidwall(solidwall_Group);
 _Create.stones(stones_Group);
 _Create.bush(bush_Group);
-_Create.minifence(minifence_Group);
+_Create.minifence(minifence_Group); // ⚫
 _Create.pool(pool_Group);
 _Create.sandbox(sandbox_Group);
 
 
 // Lights
-const ambientLight = new THREE.AmbientLight(0xffffff, 1);
-scene.add(ambientLight);
-	
-const camera = new THREE.PerspectiveCamera(75, SIZES.WIDTH / SIZES.HEIGHT, 1, 100);
+/* const ambientLight = new THREE.AmbientLight(0x86cdff, 1); */
+/* Good ambient light colors: 0x8666cc, 0x86cdff  */
+scene.add(..._LIGHTS._worldLight);
+scene.add(..._LIGHTS._worldLight2);
+scene.add(..._LIGHTS.lamp_pointLight);
+scene.add(..._LIGHTS.lightbulb_pointLight);
+scene.add(..._LIGHTS.rectangularLED_rectLight);
+
+// Sky
+/* const sky = new Sky();
+scene.add(sky);
+console.log(sky);
+sky.scale.set(100, 100, 100);
+sky.material.uniforms['turbidity'].value = 10;
+sky.material.uniforms['rayleigh'].value = 3;
+sky.material.uniforms['mieCoefficient'].value = 0.1;
+sky.material.uniforms['mieDirectionalG'].value = 0.95;
+sky.material.uniforms['sunPosition'].value.set(0.3, -0.038, -0.95); */
+
+
+const camera = new THREE.PerspectiveCamera(75, SIZES.WIDTH / SIZES.HEIGHT, 1, 200);
 camera.position.z = 20; // Initially put camera backwards to create some distance between the camera and object
 camera.position.y = 4;
 scene.add(camera);
@@ -132,6 +154,8 @@ const renderer = new THREE.WebGLRenderer({
 	canvas: CANVAS_EL
 });
 	
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.setSize(SIZES.WIDTH, SIZES.HEIGHT);
 renderer.render(scene, camera);
 	

@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import _LOAD from "./load.js";
+import _ShadowUtils from "./shadows.js";
 import GUI from "lil-gui";
 
 export default {
@@ -51,6 +52,7 @@ function createGround(sceneOrGroup) {
 
     floorGeo.rotation.x = Math.PI * -0.50;
 
+    /* _ShadowUtils.supportShadowReceiving(floorGeo); */
     sceneOrGroup.add(floorGeo);
     return floorGeo;
 }
@@ -237,6 +239,7 @@ function createHouse2(sceneOrGroup) {
         new THREE.SphereGeometry(bulbRadius, bulbWidthSegments, bulbHeightSegments),
         new THREE.MeshStandardMaterial({ 
             color: new THREE.Color("hsl(50, 75%, 75%)"),
+            emissive: new THREE.Color("hsl(50, 75%, 75%)"),
             metalness: 0.2,
             roughness: 0.5,
             transmission: 0.2,
@@ -296,7 +299,7 @@ function createHouse2(sceneOrGroup) {
     const [lsWidth, lsDepth, lsWidthSegments, lsDepthSegments] = [0.25, 0.6, 4, 4];
     const lightSource = new THREE.Mesh(
         new THREE.PlaneGeometry(lsWidth, lsDepth, lsWidthSegments, lsDepthSegments),
-        new THREE.MeshStandardMaterial({ color: "#fff" })
+        new THREE.MeshBasicMaterial({ color: "#fff" })
     );
     lightSource.rotation.x = Math.PI * 0.5;
     lightSource.position.y = -0.01 - (llHeight / 2);
@@ -425,7 +428,7 @@ function createLamp(sceneOrGroup) {
     base.position.y = baseHeight / 2;
 
 
-    const [poleRadiusTop, poleRadiusBottom, poleHeight, poleRadialSegments, poleHeightSegments] = [0.175, 0.175, 4, 8, 1]
+    const [poleRadiusTop, poleRadiusBottom, poleHeight, poleRadialSegments, poleHeightSegments] = [0.175, 0.175, 3.75, 8, 1]
     const pole = new THREE.Mesh(
         new THREE.CylinderGeometry(poleRadiusTop, poleRadiusBottom, poleHeight, poleRadialSegments, poleHeightSegments),
         new THREE.MeshStandardMaterial({ 
@@ -444,17 +447,20 @@ function createLamp(sceneOrGroup) {
         new THREE.SphereGeometry(lbRadius, lbWidthSegments, lbHeightSegments),
         new THREE.MeshPhysicalMaterial({ 
             color: new THREE.Color("#eeeeee"),
+            emissive: new THREE.Color("#eeeeee"),
+            emissiveIntensity: 0.6,
             metalness: 0.4,
             roughness: 0.8,
-            transmission: 0.2,
+            transmission: 0.7,
             ior: 1,
             thickness: 0.5
         })
     );
-    lightBulb.position.y = (lbRadius / 2) + baseHeight + poleHeight;
+    lightBulb.position.y = (lbRadius) + baseHeight + poleHeight - 0.125;
         
+    /* _ShadowUtils.supportShadowCasting([base, pole]); */
     sceneOrGroup.add(base, pole, lightBulb);
-    sceneOrGroup.position.set(-10, 0, 10);
+    sceneOrGroup.position.set(-2, 0, 2.5);
 }
 
 function createSidewalk(sceneOrGroup) {
@@ -518,6 +524,7 @@ function createSidewalk(sceneOrGroup) {
     sidewalkCircle.position.y = 0.01;
     sidewalkCircle.position.z = (swHeight / 2) + swcRadius * 0.75;
 
+    /* _ShadowUtils.supportShadowReceiving([sidewalk1, sidewalk2, sidewalkCircle]); */
     sceneOrGroup.add(sidewalk1, sidewalk2, sidewalkCircle);
     sceneOrGroup.position.set(-5, 0, 1);
 }
@@ -565,9 +572,12 @@ function createLadder(sceneOrGroup) {
         )
         ladderStep.position.y = (-ladderSideHeight / 2) + (0.55 * ladder_step_no);
         ladderStep.rotation.y = Math.PI * 0.5;
+
+        /* _ShadowUtils.supportShadowCasting(ladderStep); */
         sceneOrGroup.add(ladderStep);
     }
 
+    /* _ShadowUtils.supportShadowCasting([ladderSideL, ladderSideR]); */
     sceneOrGroup.add(ladderSideL, ladderSideR);
     sceneOrGroup.rotation.set(0, 0, Math.PI * 0.9);
     sceneOrGroup.position.set(-8.3, (ladderSideHeight / 2) - 0.1, -5.5);
@@ -677,7 +687,7 @@ function createWell(sceneOrGroup) {
 
     const hole = new THREE.Mesh(
         new THREE.CircleGeometry(holeRadius, holeSegments),
-        new THREE.MeshBasicMaterial({ color: "#000" })
+        new THREE.MeshPhongMaterial({ color: "#000" })
     );
     hole.rotation.x = Math.PI * 1.5;
     hole.position.y = (wellHeight) + 0.01;
@@ -703,6 +713,7 @@ function createWell(sceneOrGroup) {
     wellCover.position.z = 0.2;
 
 
+    /* _ShadowUtils.supportShadowCasting(wellBase, wellCover); */
     sceneOrGroup.add(wellBase, hole, wellCover);
     sceneOrGroup.position.set(-5.2, 0, 6.6);
 }
@@ -782,9 +793,9 @@ async function createTrees(sceneOrGroup) {
     const [leaves_radius, leaves_height, leaves_radialSegments, leaves_heightSegments] = [2.3, 5, 32, 4];
 
     const treesConfig = [
-        {scale: 1, zPos: 0, repeatStrength: 5, yRotate: 0},
-        {scale: 0.56, zPos: -4.5, repeatStrength: 2, yRotate: Math.PI * 0.75},
-        {scale: 0.33, zPos: -7.8, repeatStrength: 1, yRotate: Math.PI * 1.25}
+        {scale: 1, zPos: 7, xPos: -9.5, repeatStrength: 5, yRotate: 0},
+        {scale: 0.56, zPos: -4.5, xPos: 0, repeatStrength: 2, yRotate: Math.PI * 0.75},
+        {scale: 0.33, zPos: -7.8, xPos: 0, repeatStrength: 1, yRotate: Math.PI * 1.25}
     ];
 
 
@@ -823,6 +834,8 @@ async function createTrees(sceneOrGroup) {
         
         treeTrunk.position.z = treesConfig[tree_no].zPos;
         treeLeaves.position.z = treesConfig[tree_no].zPos;
+        treeTrunk.position.x = treesConfig[tree_no].xPos;
+        treeLeaves.position.x = treesConfig[tree_no].xPos;
         treeTrunk.scale.setScalar(treesConfig[tree_no].scale);
         treeLeaves.scale.setScalar(treesConfig[tree_no].scale);
         treeTrunk.rotation.y = treesConfig[tree_no].yRotate;
@@ -995,7 +1008,7 @@ function createBush(sceneOrGroup) {
         new THREE.MeshStandardMaterial({ 
             /* color: "hsl(128, 50%, 60%)", */
             aoMap: bush_Textures.aoMap,
-            roughnessMap: bush_Textures.roughMap,
+            /* roughnessMap: bush_Textures.roughMap, */
             map: bush_Textures.colorMap,
             normalMap: bush_Textures.normalMap
         })
@@ -1048,6 +1061,8 @@ function createMiniFence(sceneOrGroup) {
         fenceGroup.position.y = fsHeight / 2;
         fenceGroup.position.x = fenceSticksConfig[fenceStick_no].xPos;
 
+        /* _ShadowUtils.supportShadowCasting([fenceStick, fenceSegment]); */
+
         sceneOrGroup.add(fenceGroup);
     }
     sceneOrGroup.position.set(1.25, 0, 8.75);
@@ -1068,13 +1083,13 @@ function createPool(sceneOrGroup) {
             normalMap: pool_Textures.cover.normalMap
         })
     );
-    pool.position.y = poolTube;
+    pool.position.y = poolTube - 0.1;
     pool.rotation.x = Math.PI * 0.5;
 
     const [pbRadius, pbSegments, pbThetaStart, pbThetaLength] = [poolRadius, 16, 0, Math.PI * 2];
     const poolBase = new THREE.Mesh(
         new THREE.CircleGeometry(pbRadius, pbSegments, pbThetaStart, pbThetaLength),
-        new THREE.MeshBasicMaterial({
+        new THREE.MeshPhongMaterial({
             color: "#335041"
         })
     );
@@ -1125,6 +1140,9 @@ function createSandbox(sceneOrGroup) {
         sandboxFrame.position.x = sandboxFramesConfig[sandboxFrame_no].xPos;
         sandboxFrame.position.z = sandboxFramesConfig[sandboxFrame_no].zPos;
         sandboxFrame.rotation.y = sandboxFramesConfig[sandboxFrame_no].yRotate;
+
+        /* _ShadowUtils.supportShadowCasting(sandboxFrame); */
+        /* _ShadowUtils.supportShadowReceiving(sandboxFrame); */
         sceneOrGroup.add(sandboxFrame);
     }
 
@@ -1160,6 +1178,8 @@ function createSandbox(sceneOrGroup) {
     sandMound.position.y = smHeight / 2;
     sandMound.position.z = 2;
 
+    /* _ShadowUtils.supportShadowCasting(sandMound); */
+    /* _ShadowUtils.supportShadowReceiving(sandSurface); */
     sceneOrGroup.add(sandSurface, sandMound);
     sceneOrGroup.position.set(-9.5, 0, -0.5);
 }
