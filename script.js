@@ -14,6 +14,8 @@ const GUI_GLOBALS = {
 	color: "#59a1f3",
 };
 
+const ROTATION_VELOCITY = 1.20;
+
 const APP_GLOBALS = {
 	isLeftKeyPressed: false,
 	isRightKeyPressed: false,
@@ -205,14 +207,14 @@ const loop = () => {
 
 	if(APP_GLOBALS.isRightKeyPressed) {
 		APP_GLOBALS.rotationProgress += 0.01;
-		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * 1.10) * 20);
-		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * ROTATION_VELOCITY) * 20);
+		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * ROTATION_VELOCITY) * 20);
 	} 
 
 	else if(APP_GLOBALS.isLeftKeyPressed) {
 		APP_GLOBALS.rotationProgress -= 0.01;
-		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * 1.10) * 20);
-		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * 1.10) * 20);
+		camera.position.z = 0 + (Math.cos((APP_GLOBALS.rotationProgress) * ROTATION_VELOCITY) * 20);
+		camera.position.x = 0 + (Math.sin((APP_GLOBALS.rotationProgress) * ROTATION_VELOCITY) * 20);
 	}
 
 	camera.lookAt(new THREE.Vector3());
