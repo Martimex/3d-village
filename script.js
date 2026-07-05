@@ -19,6 +19,7 @@ const APP_GLOBALS = {
 	isRightKeyPressed: false,
 	rotationProgress: 0,
 	keyUseTimestamp: 0,
+	isIntroShown: true
 }
 
 	
@@ -41,6 +42,7 @@ window.addEventListener("resize", () => {
 	
 // Toggle fullscreen mode on double click
 window.addEventListener('dblclick', () => {
+	if(APP_GLOBALS.isIntroShown) { handleCloseIntro(); }
 	const fullScreenEl = document.fullscreenElement || document.webkitFullscreenElement;
 	if(!fullScreenEl) {
 		if(CANVAS_EL.requestFullscreen) CANVAS_EL.requestFullscreen();
@@ -63,15 +65,25 @@ document.body.addEventListener('keyup', (event) => {
 
 document.body.addEventListener('keydown', (event) => {
 	if(event.key === "ArrowLeft") { 
+		if(APP_GLOBALS.isIntroShown) { handleCloseIntro(); }
 		if(!APP_GLOBALS.isLeftKeyPressed) { APP_GLOBALS.keyUseTimestamp = (event.timeStamp / 1000).toFixed(2); }
 		APP_GLOBALS.isLeftKeyPressed = true;
 	}
 	else if(event.key ===  "ArrowRight") { 
+		if(APP_GLOBALS.isIntroShown) { handleCloseIntro(); }
 		if(!APP_GLOBALS.isRightKeyPressed) { APP_GLOBALS.keyUseTimestamp = (event.timeStamp / 1000).toFixed(2); }
 		APP_GLOBALS.isRightKeyPressed = true; 
 	}
 })
 
+function handleCloseIntro() {
+	APP_GLOBALS.isIntroShown = false;
+	const [introEl, pulsingElements] = [document.querySelector("#instruction-layer"), document.querySelectorAll("._PULSE")];
+	pulsingElements.forEach(el => el.classList.remove("_PULSE"));
+	introEl.classList.add("_FADEOUT");
+
+	/* introEl.style.display = "none"; */
+}
 
 
 // Loaders

@@ -1,7 +1,28 @@
 import * as THREE from "three";
-import { color, texture } from "three/tsl";
 
-const textureLoader = new THREE.TextureLoader();
+const loadingManager = new THREE.LoadingManager();
+const textureLoader = new THREE.TextureLoader(loadingManager);
+
+const loaderEl = document.getElementById(`loader`);
+const progressBarEl = document.getElementById(`progress-bar`);
+const [progressNowEl, progressMaxEl] = [document.getElementById(`progress-now`), document.getElementById(`progress-max`)];
+const instructionEl = document.getElementById(`instruction-layer`);
+
+loadingManager.onStart = (url, loaded, total) => {
+
+}
+
+loadingManager.onProgress = (url, loaded, total) => {
+    /* console.log(`item ${index} of ${total}`); */
+    progressBarEl.value = (loaded / total) * 100;
+    progressMaxEl.textContent = total;
+    progressNowEl.textContent = loaded;
+}
+
+loadingManager.onLoad = () => { 
+    loaderEl.classList.add("_FADEOUT-2");
+    instructionEl.classList.remove('hidden');
+}
 
 export default {
     textMatcap: () => {
@@ -10,22 +31,6 @@ export default {
         return matcapTexture;
     },
     getGroundTextures: () => {
-        /*  const alphaMap = textureLoader.load("./textures/ground/alpha.webp");
-        const aoMap = textureLoader.load("../textures/ground/Grass004_1K-PNG_AmbientOcclusion.png");
-        const colorMap = textureLoader.load("../textures/ground/Grass004_1K-PNG_Color.png");
-        const heightMap = textureLoader.load("../textures/ground/Grass004_1K-PNG_Displacement.png");
-        const normalMap = textureLoader.load("../textures/ground/Grass004_1K-PNG_NormalGL.png");
-        const roughnessMap = textureLoader.load("../textures/ground/Grass004_1K-PNG_Roughness.png");
-
-        aoMap.repeat.set(8, 8); aoMap.wrapS = THREE.RepeatWrapping; aoMap.wrapT = THREE.RepeatWrapping;
-        colorMap.repeat.set(8, 8); colorMap.wrapS = THREE.RepeatWrapping; colorMap.wrapT = THREE.RepeatWrapping;
-        colorMap.colorSpace = THREE.SRGBColorSpace;
-        heightMap.repeat.set(8, 8); heightMap.wrapS = THREE.RepeatWrapping; heightMap.wrapT = THREE.RepeatWrapping;
-        normalMap.repeat.set(8, 8); normalMap.wrapS = THREE.RepeatWrapping; normalMap.wrapT = THREE.RepeatWrapping;
-        roughnessMap.repeat.set(8, 8); roughnessMap.wrapS = THREE.RepeatWrapping; roughnessMap.wrapT = THREE.RepeatWrapping;
-    
-        return { alphaMap, aoMap, colorMap, heightMap, normalMap, roughnessMap }; */
-
         const alphaMap = textureLoader.load("./textures/ground/alpha.webp");
         const armMap = textureLoader.load("../textures/ground/brown_mud_leaves_01_arm_1k.jpg");
         const colorMap = textureLoader.load("../textures/ground/brown_mud_leaves_01_diff_1k.jpg");

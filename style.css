@@ -1,7 +1,18 @@
+:root{
+	--button-width: 3rem;
+	--button-padding: 2rem;
+	--uniform-back-color: #000e;
+}
+
 /* Remove default browser styling */
 *, *:before, *:after {
 	margin: 0;
 	padding: 0;
+	box-sizing: border-box;
+}
+
+body {
+	background: var(--uniform-back-color);
 }
 
 /* Make sure the canvas element is always covering the viewport, even when user scrolls */
@@ -10,4 +21,151 @@ canvas#webgl-canvas {
 	top: 0;
 	left: 0;
 	outline: none;
+}
+
+#loader {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	background: var(--uniform-back-color);
+	z-index: 20;
+}
+
+.progress-bar {
+	position: relative;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+#progress-bar {
+	width: 40%;
+	max-width: 450px;
+	margin-top: 1rem;
+	padding-block: 1rem;
+	user-select: none;
+	pointer-events: none;
+}
+
+.spinner svg {
+	scale: 0.25;
+}
+
+#instruction-layer {
+	position: absolute;
+	display: flex;
+	flex-flow: column;
+	justify-content: end;
+	top: 0;
+	left: 0;
+	height: 100vh;
+	width: 100%;
+	background: #cccccc22;
+	box-shadow: inset 0 0 3.75rem 0.2rem #222;
+	z-index: 10;
+}
+
+#intro {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.intro-wrapper {
+	max-width: calc((var(--button-width) + var(--button-padding)) * 3);
+}
+
+.intro-item {
+	display: grid;
+	grid-template-areas: 
+	"desc desc"
+	"key1 key2";
+	align-items: center;
+	justify-content: center;
+}
+
+.intro-description, .loader-title, .progress-text {
+	grid-area: desc;
+	color: #ccc;
+	font-size: 1.2rem;
+	line-height: 1.2;
+	letter-spacing: 0.1rem;
+	text-align: center;
+	text-transform: uppercase;
+	margin-bottom: 1.5em;
+	/* font-style: italic; */
+	font-weight: 100;
+	font-family: "Arial", sans-serif;
+	user-select: none;
+}
+
+.loader-title {
+	font-size: 1.6rem;
+}
+
+.progress-text {
+	font-size: 0.75rem;
+}
+
+.intro-key {
+	display: flex;
+	flex-wrap: wrap;
+	width: var(--button-width);
+	height: var(--button-width);
+	margin-bottom: 3.2rem;
+	padding: var(--button-padding);
+	color: #ddd;
+	border: solid 0.1rem #eeea;
+	box-shadow: inset 0 0 0.1rem 0.11rem #ccc, 0 0 0.1rem 0.11rem #ddd;
+	align-content: center;
+	justify-content: center;
+}
+
+.intro-key span {
+	font-size: calc(var(--button-width) / 2);
+	font-weight: 700;
+	text-align: center;
+	user-select: none;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+#ik-1 { grid-area: key1; }
+#ik-2 { grid-area: key2; justify-self: end; }
+
+@keyframes PULSE {
+0% { opacity: 1; scale: 1; }
+50% { opacity: 0.85; scale: 0.95 }
+100% { opacity: 0.50; scale: 0.9 }
+}
+
+._PULSE {
+	animation: PULSE 2.25s linear infinite alternate;
+}
+
+@keyframes FADEOUT {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+._FADEOUT {
+	animation: FADEOUT 0.55s ease-out;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+}
+
+._FADEOUT-2 {
+	animation: FADEOUT 0.45s linear;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
 }
