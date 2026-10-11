@@ -1,9 +1,9 @@
 import * as THREE from "three";
 import { TextGeometry } from "three/examples/jsm/Addons.js";
 import { FontLoader } from "three/examples/jsm/Addons.js";
-import _Create from "./helpers/create.js";
-import _LOAD from "./helpers/load.js";
-import _LIGHTS from "./helpers/lights.js";
+import _Create from "./create.js";
+import _LOAD from "./load.js";
+import _LIGHTS from "./lights.js";
 
 // HOOK FOR HTML CANVAS ELEMENT
 const CANVAS_EL = document.querySelector('canvas#webgl-canvas');
