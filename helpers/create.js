@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import _LOAD from "/public/helpers/load.js";
-import _ShadowUtils from "/public/helpers/shadows.js";
+import _LOAD from "./load.js";
+import _ShadowUtils from "./shadows.js";
 
 export default {
     ground: (obj) => createGround(obj),

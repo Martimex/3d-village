@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import _ShadowUtils from "/public/helpers/shadows.js";
+import _ShadowUtils from "./shadows.js";
 
 const WORLD_SKY_COLOR = 0x86cdff; /* 0x86cdff or 0x8666cc */
 
